@@ -22,7 +22,20 @@ function getWeather() {
 }
 
 function getSpotifyData() {
-  var postUrl = "https://accounts.spotify.com/api/token";
+  $.ajax({
+    url: "https://accounts.spotify.com/api/token",
+    type: 'POST',
+    headers: {
+      "Authorization": "Basic " + (spotifyClientID + ':' + spotifyClientSecret).toString('base64'),
+    },
+    form: {
+      grant_type: 'client_credentials'
+    },
+    success: function(data) {
+      console.log(data);
+    }
+  })
+/*
   $.ajax({
     url: 'https://api.spotify.com/v1/track/6rqhFgbbKwnb9MLmUQDhG6',
     type: 'GET',
@@ -32,5 +45,6 @@ function getSpotifyData() {
     success: function(data) {
         console.log(data);
     }
-});
+  });
+   */
 }
