@@ -24,7 +24,7 @@ function getWeather() {
 function getSpotifyData() {
   var postUrl = "https://accounts.spotify.com/api/token";
   $.ajax({
-    url: 'http://api.spotify.com/v1/track/6rqhFgbbKwnb9MLmUQDhG6',
+    url: 'https://api.spotify.com/v1/track/6rqhFgbbKwnb9MLmUQDhG6',
     type: 'GET',
     headers: {
         'Authorization' : 'Bearer ' + spotifyClientID
