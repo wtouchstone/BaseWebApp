@@ -1,16 +1,27 @@
-function showPicture(){
+var jsonData;
+const Ranking = require('./ranking.js');
+
+function getPlaylist(){
   // use jQuery ($ is shorthand) to find the div on the page and then change the html
   // 'rounded-circle' is a bootstrap thing! Check out more here: http://getbootstrap.com/css/
-  $("#image").append('<img class="rounded-circle" src="images/high-five.gif"/>');
-  $("p").html("High five! You're building your first web app!");
+  //console.log(jsonData.album.images);
+  playlist = $("#playlist-entry").val();
+  console.log(playlist);
+  jsonData = getSpotifyData(getSpotifyToken(), playlist);
+  var ranking = new Ranking(jsonData);
+  console.log(jsonData.tracks);
+  var imageURL = jsonData.images[0].url;
+
+  $("#image").append('<img class="rounded-circle" src="' + imageURL +'"/>');
+  $("p").html("");
   
   // jQuery can do a lot of crazy stuff, so make sure to Google around to find out more
   
 }
 
-$(document).ready(function(){
-  getSpotifyData();
-})
+//$(document).ready(function(){
+//  jsonData = getSpotifyData(getSpotifyToken());
+//})
 
 function getWeather() {
   var url = "https://api.openweathermap.org/data/2.5/weather?q=Atlanta&units=imperial&appid="+ apiKey;
@@ -21,30 +32,41 @@ function getWeather() {
   }})
 }
 
-function getSpotifyData() {
-  $.ajax({
+var accessToken;
+function getSpotifyToken() {
+  $.post({
     url: "https://accounts.spotify.com/api/token",
-    type: 'POST',
     headers: {
-      "Authorization": "Basic " + (spotifyClientID + ':' + spotifyClientSecret).toString('base64'),
+      "Authorization": "Basic " + window.btoa(spotifyClientID + ':' + spotifyClientSecret),
     },
-    form: {
+    async: false,
+    data: {
       grant_type: 'client_credentials'
     },
     success: function(data) {
-      console.log(data);
+        accessToken = data.access_token;
+        
     }
-  })
-/*
+  });   
+  while (accessToken == "") {
+    ;
+  }
+  return accessToken;
+}
+function getSpotifyData(accessToken, playlistURL) {
+  playlistID = playlistURL.substring(playlistURL.indexOf("playlist/") + 9, playlistURL.indexOf('?'));
+  baseURL = "https://api.spotify.com/v1/playlists";
+  apiURL = baseURL + '/' + playlistID;
   $.ajax({
-    url: 'https://api.spotify.com/v1/track/6rqhFgbbKwnb9MLmUQDhG6',
+    url: apiURL,
     type: 'GET',
+    async: false,
     headers: {
-        'Authorization' : 'Bearer ' + spotifyClientID
+        'Authorization' : 'Bearer ' + accessToken
     },
     success: function(data) {
-        console.log(data);
+      jsonData = data;
     }
   });
-   */
+  return jsonData;
 }
