@@ -4,6 +4,7 @@ body {
   text-align: center;
   color: #343a40;
   font-size: 22px;
+  background-color: #222222;
 }
 
 h1 {
@@ -32,3 +33,24 @@ button {
   height: 200px;
   margin-top: 60px;
 }
+
+#main {
+  margin:0 auto;
+}
+
+
+#song1 {
+  border:0px;
+  background-color: #222222;
+}
+#song2 {
+  border:0px;
+  background-color: #222222;
+}
+.album-picture {
+  z-index:1;
+  position:relative;
+}
+
+
+

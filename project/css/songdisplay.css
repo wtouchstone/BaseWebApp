@@ -1,0 +1,57 @@
+.song-display h3 {
+    width: 300;
+    position: relative;
+    z-index: 1;
+    color: #dddddd
+}
+.song-display h4 {
+    width: 300;
+    position: relative;
+    z-index: 1;
+    color: #dddddd
+}
+
+#main .list-group  #song2:after {
+  -webkit-transition: all 0.2s ease-out;  /* Chrome 1-25, Safari 3.2+ */
+     -moz-transition: all 0.2s ease-out;  /* Firefox 4-15 */
+       -o-transition: all 0.2s ease-out;  /* Opera 10.50–12.00 */
+          transition: all 0.2s ease-out;  /* Chrome 26, Firefox 16+, IE 10+, Opera 12.10+ */
+}
+
+#main .list-group  #song2:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #222222;
+    z-index: 0;    
+}
+
+#main .list-group #song2:hover:after {
+    background-color: #ffffff22;
+}
+
+#main .list-group  #song1:after {
+  -webkit-transition: all 0.2s ease-out;  /* Chrome 1-25, Safari 3.2+ */
+     -moz-transition: all 0.2s ease-out;  /* Firefox 4-15 */
+       -o-transition: all 0.2s ease-out;  /* Opera 10.50–12.00 */
+          transition: all 0.2s ease-out;  /* Chrome 26, Firefox 16+, IE 10+, Opera 12.10+ */
+}
+
+#main .list-group  #song1:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #222222;
+    z-index: 0;    
+}
+
+#main .list-group #song1:hover:after {
+    background-color: #ffffff22;
+}
+

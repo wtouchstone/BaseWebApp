@@ -1,4 +1,4 @@
-export default class Ranking {
+class Ranking {
     iterationNumber = 0;
     songArray = [];
     currentPair = [];

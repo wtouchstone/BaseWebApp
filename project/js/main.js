@@ -13,6 +13,7 @@ class Ranking {
     if (this.getStatus()) {
       return;
     }
+    console.log(this.currentPair);
     let leftInd = this.currentPair[2];
     let rightInd = this.currentPair[3];
     if (choice == 0) {
@@ -25,7 +26,7 @@ class Ranking {
         this.currentPair = newCurrentPair;
       }
     } else if (choice == 1) {
-      if (rightInd == this.songArray.length- this.iterationNumber - 1) {
+      if (rightInd == this.songArray.length - this.iterationNumber - 1) {
         this.reset();
         return;
       }
@@ -66,58 +67,118 @@ class Ranking {
 }
 
 
-
 var jsonData;
 var ranking;
 
+$(document).ready(function(){
+  showPlaylistEntry();
+})
 
 function getPlaylist(){
   // use jQuery ($ is shorthand) to find the div on the page and then change the html
   // 'rounded-circle' is a bootstrap thing! Check out more here: http://getbootstrap.com/css/
   //console.log(jsonData.album.images);
-  playlist = $("#playlist-entry").val();
+  playlist = $("#playlist-field").val();
   jsonData = getSpotifyData(getSpotifyToken(), playlist);
   ranking = new Ranking(jsonData.tracks.items);
   var imageURL = jsonData.images[0].url;
   $("#image").append('<img class="rounded-circle" src="' + imageURL +'"/>');
+  hidePlaylistEntry();
   displayChoice();
 
   // jQuery can do a lot of crazy stuff, so make sure to Google around to find out more
   
 }
 
-//$(document).ready(function(){
-//  jsonData = getSpotifyData(getSpotifyToken());
-//})
 
+
+
+function showPlaylistEntry() {
+  $('#playlist-entry').html(
+    '<p>Enter a spotify playlist below</p>' +
+    '<input id="playlist-field" value="https://open.spotify.com/playlist/31j60hVcGTeo1goD97RBGy?si=7K0LFcszTseTVyhhI9wmSw"></input>' +
+    '<button onClick="getPlaylist()" class="btn btn-dark">Click me</button>'
+  );
+}
+
+//these aren't used, keeping for sleeping reference
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function fadeLight(song) {
+  for (let i = 34; i < 100; i++) {
+    await sleep(5);
+    let hexi = i.toString(16);
+    $("#" + song).css("background-color", "#" + hexi + hexi + hexi);
+    $(".song-display").css("background-color", "#" + hexi + hexi + hexi);  
+  }
+}
+
+async function fadeDark(song) {
+  let currentRGB = $("#" + song).css("background-color").split(",")[1];
+  for (let i = currentRGB; i >= 34; i--) {
+    await sleep(5);
+    let hexi = i.toString(16);
+    $("#" + song).css("background-color", "#" + hexi + hexi + hexi);
+    $(".song-display").css("background-color", "#" + hexi + hexi + hexi);
+  }
+}
+function createSongDisplay(imageURL, title, artist, side) {
+  return (
+      '<div onclick="choice(' + side + ')" class="song-display">' +
+        '<img class="album-picture" width=300 src="' + imageURL + '"/> ' + 
+        '<h3> ' + title + '</h3f>' + 
+        '<h4>' + artist + '</h4>' +
+      '</div>' 
+  );
+}
+
+function hidePlaylistEntry() {
+  $('#playlist-entry').html("");
+}
 
 
 function displayChoice() {
   console.log(ranking.iterationNumber);
-  $("p").html(ranking.getOptions()[0].track.name + ranking.getOptions()[1].track.name);
+  console.log(ranking.getOptions()[0]);
+  console.log(ranking.getOptions()[1].track.artists[0]);
+  $("#song1").html(createSongDisplay(
+    ranking.getOptions()[0].track.album.images[0].url,
+    ranking.getOptions()[0].track.name,
+    ranking.getOptions()[0].track.artists[0].name,
+    0
+  ));
+  $("#song2").html(createSongDisplay(
+    ranking.getOptions()[1].track.album.images[0].url,
+    ranking.getOptions()[1].track.name,
+    ranking.getOptions()[1].track.artists[0].name,
+    1
+  ));
 }
 
 function displayRankings() {
-  $("p").html("");
-  for (let i = 0; i < ranking.songArray.length; i++) {
+  console.log(ranking.songArray);
+  $("#main").html('<ul class="list-group">\n');
+
+  for (let i = ranking.songArray.length - 1; i >= 0; i--) {
     console.log(ranking.songArray[i].track.name);
-    $("p").append(ranking.songArray[i].track.name);
+    $("#main").append(
+      '<li class="list-group-item">\n' + 
+        '<img width=100 src="' + ranking.songArray[i].track.album.images[0].url + '"/> ' +
+        ranking.songArray[i].track.name +
+        ' </li>\n'
+    );
   }
+  $("#main").append("</ul>");
 }
 
-function getWeather() {
-  var url = "https://api.openweathermap.org/data/2.5/weather?q=Atlanta&units=imperial&appid="+ apiKey;
-  
-  $.ajax(url,{success: function(data){
-    $(".city").text(data.name);
-    $(".temp").text(data.main.temp);
-  }})
-}
 
 function choice(num) {
   ranking.update(num);
   if (ranking.getStatus() == 1) {
     displayRankings();
+    displayStartOver();
   } else {
     displayChoice();
   }
